@@ -1,59 +1,98 @@
 # TikTok Search API
 
-A Cloudflare Worker that searches TikTok and returns structured JSON: the
-search query, result tabs, video/photo result cards (author, caption,
-hashtags, sound, thumbnail, views/likes, top-liked flag), featured users
-with their posts, and page context (language, region, geo). No API key
-needed, CORS open.
+A Node.js script that searches TikTok and prints structured JSON: result
+cards (video/photo), featured users, search tabs and page context. Run it on
+your own computer, server or phone. No account, no API key and no install
+needed for the basic run.
 
-## Live
+## Requirements
 
-```
-https://tiktok-search-api.14-14.workers.dev/?q=sidhu
-```
+- Node.js 18 or newer (20+ recommended). Check with `node --version`.
+- Nothing else for the basic run: zero dependencies, no `npm install`.
 
-## Endpoints
+## Quick start
 
-```
-GET  /?q=<search term>                 search (video results by default)
-GET  /?q=<search term>&tab=top         Top tab: mixed videos, photos, user cards
-GET  /?q=<search term>&scroll=N        scroll rounds to load more results (default 5, 0-10)
-GET  /?q=<search term>&raw=1           include the full rehydration JSON in `context`
-GET  /?q=<search term>&debug=1         add a debug object (final URL, title, data-e2e counts)
-POST /?q=<search term>                 post a saved TikTok search page HTML as the body
+```sh
+git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+cd tiktok-search-api
+node tiktok-search.mjs "sidhu"
 ```
 
-Example response (shortened):
+No download? Grab the single file instead:
+
+```sh
+curl -O https://raw.githubusercontent.com/faizanahmadkhichi/tiktok-search-api/main/tiktok-search.mjs
+node tiktok-search.mjs "sidhu"
+```
+
+## Usage
+
+```sh
+node tiktok-search.mjs "search terms" [options]
+```
+
+| Option | What it does |
+|---|---|
+| `--cookie "name=value; ..."` | Logged-in TikTok cookies (or set `TIKTOK_COOKIE`) |
+| `--tab top` \| `video` | Search tab (default: `video`) |
+| `--scroll N` | Scroll rounds in browser mode, 0-10 (default: 5) |
+| `--raw` | Include the full rehydration JSON in `context` |
+| `--debug` | Include a debug object (final URL, title, counts) |
+| `--browser` | Render the page in a real browser (needs `puppeteer`) |
+| `--html <file>` | Parse a saved TikTok search page instead of fetching |
+| `-h`, `--help` | Show help |
+
+Examples:
+
+```sh
+node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "funny cats" --tab top
+node tiktok-search.mjs "sidhu" --cookie "sessionid=abc123; sid_tt=xyz"
+node tiktok-search.mjs "sidhu" --browser --scroll 3
+node tiktok-search.mjs --html saved-search-page.html "sidhu"
+TIKTOK_COOKIE="sessionid=abc123; sid_tt=xyz" node tiktok-search.mjs "sidhu"
+```
+
+Save the output to a file:
+
+```sh
+node tiktok-search.mjs "sidhu" > results.json
+```
+
+## Output
+
+JSON on stdout. Example (shortened — one item shown):
 
 ```json
 {
   "success": true,
-  "source": "browser-rendering",
+  "source": "direct-fetch",
   "query": "sidhu",
-  "totalItems": 12,
-  "totalFeaturedUsers": 1,
+  "totalItems": 3,
+  "totalFeaturedUsers": 2,
   "tab": "video",
-  "tabs": ["Top", "Users", "Videos", "LIVE", "Photo"],
+  "tabs": ["Top", "Videos", "Users"],
   "items": [
     {
+      "index": 0,
       "id": "7461234567890123456",
       "type": "video",
-      "url": "https://www.tiktok.com/@handle/video/7461234567890123456",
-      "authorHandle": "handle",
-      "authorName": "Name",
-      "caption": "caption text #hashtag",
-      "hashtags": ["hashtag"],
-      "sound": "original sound - handle",
-      "thumbnail": "https://...",
+      "url": "https://www.tiktok.com/@sidhu_moose/video/7461234567890123456",
+      "authorHandle": "sidhu_moose",
+      "authorName": "Sidhu Fan",
+      "caption": "Moose Wala vibes #sidhu",
+      "hashtags": ["sidhu"],
+      "sound": "original sound - sidhu_moose",
+      "thumbnail": "https://p16-sign.tiktokcdn.com/thumb.jpg",
       "likesOrViewsText": "12.3K",
       "likesOrViewsCount": 12300,
-      "isTopLiked": false
+      "isTopLiked": true
     }
   ],
   "featuredUsers": [
     {
-      "handle": "handle",
-      "profileUrl": "https://www.tiktok.com/@handle",
+      "handle": "featured_one",
+      "profileUrl": "https://www.tiktok.com/@featured_one",
       "posts": []
     }
   ],
@@ -61,52 +100,164 @@ Example response (shortened):
 }
 ```
 
+`source` is `direct-fetch`, `browser-rendering` or `file-html`.
+On failure the script prints `{"success": false, "error": "..."}` to
+stderr and exits with code 1.
+
+## Getting a TIKTOK_COOKIE (for reliable results)
+
+1. Log in to tiktok.com in your desktop browser.
+2. Open DevTools (F12) → Application → Cookies → `https://www.tiktok.com`.
+3. Copy the cookies as one string: `name=value; name=value; ...`
+4. Use it:
+
+```sh
+node tiktok-search.mjs "sidhu" --cookie "sessionid=...; sid_tt=..."
+```
+
+or set it once per session:
+
+```sh
+export TIKTOK_COOKIE="sessionid=...; sid_tt=..."
+node tiktok-search.mjs "sidhu"
+```
+
+Never share your cookie string with anyone and never commit it to a repo.
+It logs in as you.
+
+## Why results can be empty
+
+TikTok gates search results behind bot detection. Automated requests,
+especially from datacenter IPs (most VPS servers), often get an empty page
+even though a real browser gets results while logged out. When that
+happens the script still exits 0 and prints valid JSON with
+`"totalItems": 0` and a `warning` field explaining it.
+
+What actually helps, in order:
+
+1. A logged-in `TIKTOK_COOKIE` (see above).
+2. A residential IP instead of a datacenter IP.
+3. `--browser` mode, which renders the page in a real browser.
+4. `--html`: open `tiktok.com/search?q=...` in a real browser where
+   results show, save the page (Ctrl+S, complete page), and parse it:
+
+```sh
+node tiktok-search.mjs --html saved-page.html "sidhu"
+```
+
+## Host it on your own VPS
+
+Any Ubuntu/Debian VPS works. SSH in and run:
+
+```sh
+sudo apt update && sudo apt install -y curl git
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+cd tiktok-search-api
+node tiktok-search.mjs "sidhu"
+```
+
+Run a search on a schedule with cron (saves the JSON every hour):
+
+```sh
+crontab -e
+```
+
+```cron
+0 * * * * cd ~/tiktok-search-api && node tiktok-search.mjs "sidhu" > ~/sidhu.json 2> ~/sidhu.err
+```
+
+Note: most VPS IPs are datacenter IPs, so expect empty results without
+a logged-in cookie — see "Why results can be empty" above.
+
+## Install Node.js
+
+### Ubuntu / Debian
+
+```sh
+sudo apt update && sudo apt install -y curl git
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+node --version
+```
+
+Then:
+
+```sh
+git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+cd tiktok-search-api
+node tiktok-search.mjs "sidhu"
+```
+
+### Linux (other distros)
+
+```sh
+# Fedora / RHEL
+sudo dnf install -y nodejs git
+
+# Arch
+sudo pacman -S nodejs git
+```
+
+Or download Node.js from https://nodejs.org — then clone and run the
+script the same way as above.
+
+### Termux (Android)
+
+```sh
+pkg update && pkg install -y nodejs git
+git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+cd tiktok-search-api
+node tiktok-search.mjs "sidhu"
+```
+
+To save output where other apps can see it, give Termux storage access
+first (`termux-setup-storage`) and write to `~/storage/downloads`:
+
+```sh
+node tiktok-search.mjs "sidhu" > ~/storage/downloads/results.json
+```
+
+### Windows (PowerShell)
+
+```powershell
+winget install OpenJS.NodeJS.LTS
+winget install Git.Git
+```
+
+Close PowerShell, open it again, then:
+
+```powershell
+git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+cd tiktok-search-api
+node tiktok-search.mjs "sidhu"
+```
+
+No git? Download the repo ZIP from GitHub, extract it, and run the
+script from that folder in PowerShell.
+
 ## How it works
 
-Three modes, in order:
+1. Fetches the TikTok search page with a desktop browser User-Agent
+   (plain `fetch`, plus your cookie when you pass one).
+2. Parses the result cards (`data-e2e="search_video-item"` /
+   `search_top-item`, `user-post-item`, `#search-tabs`) and the
+   `__UNIVERSAL_DATA_FOR_REHYDRATION__` script for page context.
+3. Prints the result as JSON.
 
-1. **POST raw HTML** — post a saved TikTok search page
-   (`tiktok.com/search?q=...`) as the request body and the Worker parses it.
-   Best for testing.
-2. **Cloudflare Browser Rendering** — when the `BROWSER` binding is present,
-   the Worker opens the search page in headless Chromium (via
-   `@cloudflare/puppeteer`) so the client-side results load, then parses the
-   rendered DOM with HTMLRewriter. The browser session is reused across
-   requests so TikTok's device cookies survive between calls.
-3. **Direct fetch** — plain HTTP fetch fallback. TikTok's search page is
-   client-side rendered, so this usually only gets the empty SSR shell.
-
-The parser reads the result cards (`data-e2e="search_top-item"` /
-`search_video-item`, `user-post-item`, `#search-tabs`) and the
-`__UNIVERSAL_DATA_FOR_REHYDRATION__` script for context.
-
-## Note on empty results
-
-TikTok gates search results behind bot detection: an automated browser
-session may get only skeleton placeholders and no result cards. When no
-items are found the API returns a `warning` field explaining this. To get
-real results, store a logged-in TikTok cookie as a Worker secret (never
-commit a real cookie value):
+`--browser` opens the same page in a real headless browser so the
+client-side results load, then parses the rendered page. It needs
+`puppeteer`, which is the only optional dependency:
 
 ```sh
-wrangler secret put TIKTOK_COOKIE
+npm install puppeteer
 ```
 
-Paste the cookies as one `name=value; name=value; ...` string. Or POST HTML
-saved from a real browser where results show.
+## Files
 
-## Deploy
-
-```sh
-npm install
-npx wrangler deploy
-```
-
-`wrangler.toml` uses `compatibility_date = "2025-01-01"` and
-`compatibility_flags = ["nodejs_compat"]`. The flag is required: without
-it the deploy fails with `No such module "node:fs"` from
-`@cloudflare/puppeteer` (pinned to 2.0.1 in `package.json`).
-
-Local test: `npx wrangler dev` works, but Browser Rendering does not run
-locally. Locally the Worker falls back to direct fetch, so use POST with
-saved HTML to test the parser.
+- `tiktok-search.mjs` — the whole script, zero dependencies
+- `package.json` — optional `puppeteer` for `--browser` mode, plus the
+  `tiktok-search` command (`npm install -g .` makes it available
+  everywhere)
+- `README.md` — this file
