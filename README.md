@@ -15,14 +15,14 @@ needed for the basic run.
 ```sh
 git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
 cd tiktok-search-api
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 No download? Grab the single file instead:
 
 ```sh
 curl -O https://raw.githubusercontent.com/faizanahmadkhichi/tiktok-search-api/main/tiktok-search.mjs
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 ## Usage
@@ -45,18 +45,18 @@ node tiktok-search.mjs "search terms" [options]
 Examples:
 
 ```sh
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 node tiktok-search.mjs "funny cats" --tab top
-node tiktok-search.mjs "sidhu" --cookie "sessionid=abc123; sid_tt=xyz"
-node tiktok-search.mjs "sidhu" --browser --scroll 3
-node tiktok-search.mjs --html saved-search-page.html "sidhu"
-TIKTOK_COOKIE="sessionid=abc123; sid_tt=xyz" node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS" --cookie "sessionid=abc123; sid_tt=xyz"
+node tiktok-search.mjs "FAK LABS" --browser --scroll 3
+node tiktok-search.mjs --html saved-search-page.html "FAK LABS"
+TIKTOK_COOKIE="sessionid=abc123; sid_tt=xyz" node tiktok-search.mjs "FAK LABS"
 ```
 
 Save the output to a file:
 
 ```sh
-node tiktok-search.mjs "sidhu" > results.json
+node tiktok-search.mjs "FAK LABS" > results.json
 ```
 
 ## Output
@@ -67,7 +67,7 @@ JSON on stdout. Example (shortened — one item shown):
 {
   "success": true,
   "source": "direct-fetch",
-  "query": "sidhu",
+  "query": "FAK LABS",
   "totalItems": 3,
   "totalFeaturedUsers": 2,
   "tab": "video",
@@ -77,12 +77,12 @@ JSON on stdout. Example (shortened — one item shown):
       "index": 0,
       "id": "7461234567890123456",
       "type": "video",
-      "url": "https://www.tiktok.com/@sidhu_moose/video/7461234567890123456",
-      "authorHandle": "sidhu_moose",
-      "authorName": "Sidhu Fan",
-      "caption": "Moose Wala vibes #sidhu",
-      "hashtags": ["sidhu"],
-      "sound": "original sound - sidhu_moose",
+      "url": "https://www.tiktok.com/@faklabs/video/7461234567890123456",
+      "authorHandle": "faklabs",
+      "authorName": "FAK LABS",
+      "caption": "FAK BOT by FAK LABS #faklabs",
+      "hashtags": ["faklabs"],
+      "sound": "original sound - faklabs",
       "thumbnail": "https://p16-sign.tiktokcdn.com/thumb.jpg",
       "likesOrViewsText": "12.3K",
       "likesOrViewsCount": 12300,
@@ -112,14 +112,14 @@ stderr and exits with code 1.
 4. Use it:
 
 ```sh
-node tiktok-search.mjs "sidhu" --cookie "sessionid=...; sid_tt=..."
+node tiktok-search.mjs "FAK LABS" --cookie "sessionid=...; sid_tt=..."
 ```
 
 or set it once per session:
 
 ```sh
 export TIKTOK_COOKIE="sessionid=...; sid_tt=..."
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 Never share your cookie string with anyone and never commit it to a repo.
@@ -142,7 +142,7 @@ What actually helps, in order:
    results show, save the page (Ctrl+S, complete page), and parse it:
 
 ```sh
-node tiktok-search.mjs --html saved-page.html "sidhu"
+node tiktok-search.mjs --html saved-page.html "FAK LABS"
 ```
 
 ## Host it on your own VPS
@@ -155,7 +155,7 @@ curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
 cd tiktok-search-api
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 Run a search on a schedule with cron (saves the JSON every hour):
@@ -165,7 +165,7 @@ crontab -e
 ```
 
 ```cron
-0 * * * * cd ~/tiktok-search-api && node tiktok-search.mjs "sidhu" > ~/sidhu.json 2> ~/sidhu.err
+0 * * * * cd ~/tiktok-search-api && node tiktok-search.mjs "FAK LABS" > ~/fak-labs.json 2> ~/fak-labs.err
 ```
 
 Note: most VPS IPs are datacenter IPs, so expect empty results without
@@ -187,7 +187,7 @@ Then:
 ```sh
 git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
 cd tiktok-search-api
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 ### Linux (other distros)
@@ -209,14 +209,14 @@ script the same way as above.
 pkg update && pkg install -y nodejs git
 git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
 cd tiktok-search-api
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 To save output where other apps can see it, give Termux storage access
 first (`termux-setup-storage`) and write to `~/storage/downloads`:
 
 ```sh
-node tiktok-search.mjs "sidhu" > ~/storage/downloads/results.json
+node tiktok-search.mjs "FAK LABS" > ~/storage/downloads/results.json
 ```
 
 ### Windows (PowerShell)
@@ -231,7 +231,7 @@ Close PowerShell, open it again, then:
 ```powershell
 git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
 cd tiktok-search-api
-node tiktok-search.mjs "sidhu"
+node tiktok-search.mjs "FAK LABS"
 ```
 
 No git? Download the repo ZIP from GitHub, extract it, and run the
