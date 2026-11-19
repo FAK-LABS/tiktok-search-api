@@ -15,7 +15,7 @@ needed for the basic run.
 ## Quick start
 
 ```sh
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -23,7 +23,7 @@ node tiktok-search.mjs "FAK LABS"
 No download? Grab the single file instead:
 
 ```sh
-curl -O https://raw.githubusercontent.com/faizanahmadkhichi/tiktok-search-api/main/tiktok-search.mjs
+curl -O https://raw.githubusercontent.com/FAK-LABS/tiktok-search-api/main/tiktok-search.mjs
 node tiktok-search.mjs "FAK LABS"
 ```
 
@@ -155,7 +155,7 @@ Any Ubuntu/Debian VPS works. SSH in and run:
 sudo apt update && sudo apt install -y curl git
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -187,7 +187,7 @@ node --version
 Then:
 
 ```sh
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -209,7 +209,7 @@ script the same way as above.
 
 ```sh
 pkg update && pkg install -y nodejs git
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -231,7 +231,7 @@ winget install Git.Git
 Close PowerShell, open it again, then:
 
 ```powershell
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
