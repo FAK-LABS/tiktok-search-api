@@ -1,3 +1,5 @@
+[中文](README.zh-CN.md)
+
 # TikTok Search API
 
 A Node.js script that searches TikTok and prints structured JSON: result
