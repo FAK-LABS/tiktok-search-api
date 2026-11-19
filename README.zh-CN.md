@@ -12,7 +12,7 @@
 ## 快速开始
 
 ```sh
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -20,7 +20,7 @@ node tiktok-search.mjs "FAK LABS"
 不想下载整个仓库？只拿单个文件：
 
 ```sh
-curl -O https://raw.githubusercontent.com/faizanahmadkhichi/tiktok-search-api/main/tiktok-search.mjs
+curl -O https://raw.githubusercontent.com/FAK-LABS/tiktok-search-api/main/tiktok-search.mjs
 node tiktok-search.mjs "FAK LABS"
 ```
 
@@ -145,7 +145,7 @@ node tiktok-search.mjs --html saved-page.html "FAK LABS"
 sudo apt update && sudo apt install -y curl git
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -176,7 +176,7 @@ node --version
 然后：
 
 ```sh
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -197,7 +197,7 @@ sudo pacman -S nodejs git
 
 ```sh
 pkg update && pkg install -y nodejs git
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
@@ -218,7 +218,7 @@ winget install Git.Git
 关闭 PowerShell，重新打开，然后：
 
 ```powershell
-git clone https://github.com/faizanahmadkhichi/tiktok-search-api.git
+git clone https://github.com/FAK-LABS/tiktok-search-api.git
 cd tiktok-search-api
 node tiktok-search.mjs "FAK LABS"
 ```
